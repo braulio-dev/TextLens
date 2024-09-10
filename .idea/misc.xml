@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Black">
+    <option name="sdkName" value="textlens" />
+  </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="DiscordProjectSettings">
+    <option name="show" value="ASK" />
+    <option name="description" value="" />
+  </component>
+  <component name="MarkdownSettings">
+    <enabledExtensions>
+      <entry key="MermaidLanguageExtension" value="false" />
+      <entry key="PlantUMLLanguageExtension" value="false" />
+    </enabledExtensions>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State />
+          <State>
+            <id>AccessibilityLintAndroid</id>
+          </State>
+          <State>
+            <id>Android</id>
+          </State>
+          <State>
+            <id>CSS</id>
+          </State>
+          <State>
+            <id>Code quality toolsCSS</id>
+          </State>
+          <State>
+            <id>Code quality toolsJavaScript and TypeScript</id>
+          </State>
+          <State>
+            <id>Code style issuesJava</id>
+          </State>
+          <State>
+            <id>CodePlugin DevKit</id>
+          </State>
+          <State>
+            <id>Control flow issuesJava</id>
+          </State>
+          <State>
+            <id>Control flow issuesJavaScript and TypeScript</id>
+          </State>
+          <State>
+            <id>Control flowPHP</id>
+          </State>
+          <State>
+            <id>CorrectnessLintAndroid</id>
+          </State>
+          <State>
+            <id>ECMAScript 6 migration aidsJavaScript and TypeScript</id>
+          </State>
+          <State>
+            <id>Error handlingJava</id>
+          </State>
+          <State>
+            <id>GeneralJavaScript and TypeScript</id>
+          </State>
+          <State>
+            <id>IconsUsabilityLintAndroid</id>
+          </State>
+          <State>
+            <id>Internationalization</id>
+          </State>
+          <State>
+            <id>Java</id>
+          </State>
+          <State>
+            <id>Java 8Java language level migration aidsJava</id>
+          </State>
+          <State>
+            <id>Java 9Java language level migration aidsJava</id>
+          </State>
+          <State>
+            <id>Java interop issuesKotlin</id>
+          </State>
+          <State>
+            <id>Java language level migration aidsJava</id>
+          </State>
+          <State>
+            <id>JavaScript and TypeScript</id>
+          </State>
+          <State>
+            <id>Kotlin</id>
+          </State>
+          <State>
+            <id>LintAndroid</id>
+          </State>
+          <State>
+            <id>PHP</id>
+          </State>
+          <State>
+            <id>PerformanceJava</id>
+          </State>
+          <State>
+            <id>PerformanceLintAndroid</id>
+          </State>
+          <State>
+            <id>Plugin DevKit</id>
+          </State>
+          <State>
+            <id>Probable bugsKotlin</id>
+          </State>
+          <State>
+            <id>SecurityLintAndroid</id>
+          </State>
+          <State>
+            <id>Style issuesKotlin</id>
+          </State>
+          <State>
+            <id>TypeScriptJavaScript and TypeScript</id>
+          </State>
+          <State>
+            <id>Unused symbolsJavaScript and TypeScript</id>
+          </State>
+          <State>
+            <id>UsabilityLintAndroid</id>
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>Android</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="textlens" project-jdk-type="Python SDK" />
+  <component name="SaveActionSettings">
+    <option name="actions">
+      <set>
+        <option value="activate" />
+        <option value="activateOnShortcut" />
+        <option value="activateOnBatch" />
+        <option value="organizeImports" />
+        <option value="reformat" />
+        <option value="rearrange" />
+        <option value="fieldCanBeFinal" />
+        <option value="localCanBeFinal" />
+        <option value="localCanBeFinalExceptImplicit" />
+        <option value="unqualifiedFieldAccess" />
+        <option value="unqualifiedMethodAccess" />
+        <option value="missingOverrideAnnotation" />
+        <option value="useBlocks" />
+        <option value="generateSerialVersionUID" />
+        <option value="suppressAnnotation" />
+        <option value="unnecessarySemicolon" />
+      </set>
+    </option>
+    <option name="configurationPath" value="" />
+  </component>
+</project>

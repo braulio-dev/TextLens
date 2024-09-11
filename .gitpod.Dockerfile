@@ -1,5 +1,5 @@
 # Use the official Gitpod base image
-FROM gitpod/workspace-full:latest
+FROM gitpod/workspace-python
 
 # Install system dependencies
 USER root

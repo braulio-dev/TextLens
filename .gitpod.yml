@@ -1,0 +1,8 @@
+image:
+    file: .gitpod.Dockerfile
+
+tasks:
+  - init: echo "Gitpod environment setup"
+  - command: python main.py
+
+

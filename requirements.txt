@@ -1,6 +1,8 @@
 opencv-python
 pytesseract
 torch
-transformers
+transformers[torch]
 markdown
 pyspellchecker
+datasets
+accelerate

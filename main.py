@@ -4,6 +4,7 @@ import markdown
 from spellchecker import SpellChecker
 import torch
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from generate_summary import generate_summary
 
 # Capture image from the first connected camera
 cap = cv2.VideoCapture(2)
@@ -39,12 +40,6 @@ text = pytesseract.image_to_string('./dump/preprocessed_slide.jpg', lang='spa', 
 spell = SpellChecker(language='es')
 corrected_text = ' '.join([spell.correction(word) or word for word in text.split()])
 
-# Generate the summarized text
-tokenizer = AutoTokenizer.from_pretrained("t5-base")
-model = AutoModelForSeq2SeqLM.from_pretrained("t5-base")
-inputs = tokenizer.encode("summarize: " + corrected_text, return_tensors="pt", max_length=512, truncation=True)
-
-summary_ids = model.generate(inputs, max_length=150, min_length=80, length_penalty=5.0, num_beams=2, early_stopping=True)
-
-summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
+# Generate the summarized text using the fine-tuned model
+summary = generate_summary(corrected_text, model_dir="./fine-tuned-t5")
 print(summary)

@@ -13,7 +13,7 @@ def read_file_with_encodings(file_path, encodings=['utf-8', 'latin-1', 'iso-8859
     raise UnicodeDecodeError(f"Unable to decode the file {file_path} with provided encodings.")
 
 def load_and_preprocess_dataset(image_dir, text_dir):
-    data = {"text": [], "summary": []}
+    data = {"ocr_text": [], "true_text": []}
 
     # Iterate over the image files
     for image_file in os.listdir(image_dir):
@@ -29,11 +29,11 @@ def load_and_preprocess_dataset(image_dir, text_dir):
             
             # Read the image file
             image_path = os.path.join(image_dir, image_file)
-            image = pytesseract.image_to_string(image_path, lang='spa')
+            ocr_text = pytesseract.image_to_string(image_path, lang='spa')
             
             # Append the extracted text and true text to the data
-            data["text"].append(image)
-            data["summary"].append(true_text)
+            data["ocr_text"].append(ocr_text)
+            data["true_text"].append(true_text)
     
     # Create a Hugging Face dataset
     dataset = Dataset.from_dict(data)
@@ -49,12 +49,12 @@ def load_and_preprocess_dataset(image_dir, text_dir):
 
     # Tokenize the dataset
     def preprocess_function(examples):
-        inputs = ["summarize: " + doc for doc in examples['text']]
+        inputs = examples['ocr_text']
         model_inputs = tokenizer(inputs, max_length=512, truncation=True)
 
         # Setup the tokenizer for targets
         with tokenizer.as_target_tokenizer():
-            labels = tokenizer(examples['summary'], max_length=150, truncation=True)
+            labels = tokenizer(examples['true_text'], max_length=512, truncation=True)
 
         model_inputs["labels"] = labels["input_ids"]
         return model_inputs

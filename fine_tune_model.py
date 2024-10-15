@@ -1,7 +1,7 @@
 from transformers import AutoModelForSeq2SeqLM, Seq2SeqTrainingArguments, Seq2SeqTrainer
 from dataset_preparation import load_and_preprocess_dataset
 
-def fine_tune_model(image_dir, text_dir, output_dir="./fine-tuned-t5"):
+def fine_tune_model(image_dir, text_dir, output_dir="./fine-tuned-t5-ocr"):
     tokenized_datasets, tokenizer = load_and_preprocess_dataset(image_dir, text_dir)
 
     # Load the pre-trained model

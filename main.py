@@ -1,28 +1,20 @@
 import cv2
 import pytesseract
-import markdown
 from spellchecker import SpellChecker
-import torch
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
-from generate_summary import generate_summary
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
-# Capture image from the first connected camera
-cap = cv2.VideoCapture(2)
-ret, frame = cap.read()
-
-# Save the captured image
-if ret:
-    cv2.imwrite('./dump/slide.jpg', frame)
-
-cap.release()
+# Load the fine-tuned model and tokenizer
+model_path = "./fine-tuned-t5-ocr"
+model = AutoModelForSeq2SeqLM.from_pretrained(model_path)
+tokenizer = AutoTokenizer.from_pretrained(model_path)
 
 # Load the image
-img = cv2.imread('./dump/slide.jpg', cv2.IMREAD_GRAYSCALE)
+image_path = './dump/slide.jpg'
+image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 
-# Preprocessing: Resize, Thresholding
-resized = cv2.resize(img, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
-blurred = cv2.GaussianBlur(resized, (5, 5), 0)
-thresholded = cv2.adaptiveThreshold(blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+# Preprocess the image
+# Apply thresholding
+_, thresholded = cv2.threshold(image, 150, 255, cv2.THRESH_BINARY)
 
 # Save preprocessed image
 cv2.imwrite('./dump/preprocessed_slide.jpg', thresholded)
@@ -35,11 +27,16 @@ config = '--oem 1 --psm 6 -c preserve_interword_spaces=1'
 
 # Extract text from the preprocessed image
 text = pytesseract.image_to_string('./dump/preprocessed_slide.jpg', lang='spa', config=config)
+print(text)
 
 # Correct spelling and common OCR mistakes
-spell = SpellChecker(language='es')
-corrected_text = ' '.join([spell.correction(word) or word for word in text.split()])
+# spell = SpellChecker(language='es')
+# corrected_text = ' '.join([spell.correction(word) or word for word in text.split()])
 
-# Generate the summarized text using the fine-tuned model
-summary = generate_summary(corrected_text, model_dir="./fine-tuned-t5")
-print(summary)
+# # Use the fine-tuned model to correct OCR text
+# inputs = tokenizer(corrected_text, return_tensors="pt", max_length=512, truncation=True)
+# outputs = model.generate(inputs["input_ids"], max_length=512, num_beams=4, early_stopping=True)
+# corrected_ocr_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+
+# print("Corrected OCR Text:")
+# print(corrected_ocr_text)

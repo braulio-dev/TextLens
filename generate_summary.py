@@ -1,6 +1,6 @@
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
-def generate_summary(text, model_dir="./fine-tuned-t5"):
+def generate_summary(text, model_dir="./fine-tuned-t5-ocr"):
     # Load the fine-tuned model
     tokenizer = AutoTokenizer.from_pretrained(model_dir)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_dir)

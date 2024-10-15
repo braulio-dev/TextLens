@@ -2,4 +2,4 @@ __pycache__/
 dataset/
 .idea/
 dump/
-fine-tuned-t5/
+fine-tuned-t5-ocr/

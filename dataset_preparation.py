@@ -1,4 +1,5 @@
 import os
+import re
 import pytesseract
 from datasets import Dataset, DatasetDict
 from transformers import AutoTokenizer
@@ -20,9 +21,12 @@ def load_and_preprocess_dataset(image_dir, text_dir):
         if image_file.endswith(('.png', '.jpg', '.jpeg')):
             # Extract the base name without extension
             base_name = os.path.splitext(image_file)[0]
-            
-            # Construct the corresponding text file path
-            text_file = os.path.join(text_dir, base_name + ".txt")
+
+            # Remove the space and the (#) pattern at the end of the base name
+            trimmed_base_name = re.sub(r"\s*\(\d+\)$", "", base_name)
+
+            # Construct the new file path
+            text_file = os.path.join(text_dir, trimmed_base_name + ".txt")
             
             # Read the true text from the text file
             true_text = read_file_with_encodings(text_file)
@@ -50,11 +54,11 @@ def load_and_preprocess_dataset(image_dir, text_dir):
     # Tokenize the dataset
     def preprocess_function(examples):
         inputs = examples['ocr_text']
-        model_inputs = tokenizer(inputs, max_length=512, truncation=True)
+        model_inputs = tokenizer(inputs, padding='max_length', max_length=512, truncation=True)
 
         # Setup the tokenizer for targets
         with tokenizer.as_target_tokenizer():
-            labels = tokenizer(examples['true_text'], max_length=512, truncation=True)
+            labels = tokenizer(examples['true_text'], padding='max_length', max_length=512, truncation=True)
 
         model_inputs["labels"] = labels["input_ids"]
         return model_inputs

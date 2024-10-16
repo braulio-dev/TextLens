@@ -16,10 +16,7 @@ Anaconda is recommended for managing the environment. To create the environment,
 conda create --name textlens python=3.12.4
 conda activate textlens
 conda install -c conda-forge opencv pytesseract pytorch
-pip install markdown
-pip install pyspellchecker
-pip install transformers
-pip install pytorch
+pip install -r requirements.txt
 ```
 
 ## Usage

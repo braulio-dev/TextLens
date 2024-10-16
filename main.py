@@ -1,42 +1,33 @@
-import cv2
-import pytesseract
-from spellchecker import SpellChecker
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+import argparse
+from utils import preprocess_image, extract_text_from_image, correct_text_with_spellchecker, correct_text_with_model, evaluate_ocr
 
-# Load the fine-tuned model and tokenizer
-model_path = "./fine-tuned-t5-ocr"
-model = AutoModelForSeq2SeqLM.from_pretrained(model_path)
-tokenizer = AutoTokenizer.from_pretrained(model_path)
+def main(image_path, model_path, ground_truth_text=None, evaluate_metrics=False):
+    # Preprocess the image
+    preprocessed_image_path = preprocess_image(image_path, './dump/preprocessed_slide.jpg')
 
-# Load the image
-image_path = './dump/slide.jpg'
-image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    # Extract text from the preprocessed image
+    text = extract_text_from_image(image_path, lang='spa')
+    # text = extract_text_from_image(preprocessed_image_path, lang='spa')
 
-# Preprocess the image
-# Apply thresholding
-_, thresholded = cv2.threshold(image, 150, 255, cv2.THRESH_BINARY)
+    # Correct spelling and common OCR mistakes
+    corrected_text = correct_text_with_spellchecker(text, language='es')
 
-# Save preprocessed image
-cv2.imwrite('./dump/preprocessed_slide.jpg', thresholded)
+    print("Read Text:")
+    print(text)
 
-# Config:
-# oem 1: LSTM OCR Engine
-# psm 6: Assume a single uniform block of text
-# preserve_interword_spaces=1: Preserve interword spaces
-config = '--oem 1 --psm 6 -c preserve_interword_spaces=1'
+    # Optionally evaluate OCR performance
+    if evaluate_metrics and ground_truth_text:
+        cer_value, wer_value, levenshtein_value = evaluate_ocr(text, ground_truth_text)
+        print(f"CER: {cer_value}")
+        print(f"WER: {wer_value}")
+        print(f"Levenshtein Distance: {levenshtein_value}")
 
-# Extract text from the preprocessed image
-text = pytesseract.image_to_string('./dump/preprocessed_slide.jpg', lang='spa', config=config)
-print(text)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="OCR and text correction")
+    parser.add_argument('--image_path', type=str, required=True, help="Path to the input image")
+    parser.add_argument('--model_path', type=str, default="./fine-tuned-t5-ocr", help="Path to the fine-tuned model")
+    parser.add_argument('--ground_truth_text', type=str, help="Ground truth text for evaluation")
+    parser.add_argument('--evaluate_metrics', action='store_true', help="Flag to evaluate OCR metrics")
 
-# Correct spelling and common OCR mistakes
-# spell = SpellChecker(language='es')
-# corrected_text = ' '.join([spell.correction(word) or word for word in text.split()])
-
-# # Use the fine-tuned model to correct OCR text
-# inputs = tokenizer(corrected_text, return_tensors="pt", max_length=512, truncation=True)
-# outputs = model.generate(inputs["input_ids"], max_length=512, num_beams=4, early_stopping=True)
-# corrected_ocr_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
-
-# print("Corrected OCR Text:")
-# print(corrected_ocr_text)
+    args = parser.parse_args()
+    main(args.image_path, args.model_path, args.ground_truth_text, args.evaluate_metrics)

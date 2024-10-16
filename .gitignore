@@ -1,5 +1,6 @@
 __pycache__/
 dataset/
 .idea/
-dump/
-fine-tuned-t5-ocr/
+ocr-*/
+old_model.zip
+model.zip

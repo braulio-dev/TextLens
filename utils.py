@@ -44,7 +44,17 @@ def evaluate_ocr(text, ground_truth_text):
     levenshtein_value = levenshtein_distance(trimmed, ground_truth_text)
     return cer_value, wer_value, levenshtein_value
 
-def extract_text_from_image(image_path, lang='spa', config='--oem 1 --psm 6 -c preserve_interword_spaces=1'):
+def normalize_spanish_accents(text):
+    replacements = {
+        'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u',
+        'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U',
+        'ñ': 'n', 'Ñ': 'N'
+    }
+    for accented_char, normal_char in replacements.items():
+        text = text.replace(accented_char, normal_char)
+    return text
+
+def extract_text_from_image(image_path, lang, config='--oem 1 --psm 6 -c preserve_interword_spaces=1'):
     processed_image = Image.open(image_path)
 
     # Grayscale
@@ -61,14 +71,21 @@ def extract_text_from_image(image_path, lang='spa', config='--oem 1 --psm 6 -c p
     processed_image.save("./dump/processed_image.png")
 
     text = pytesseract.image_to_string(processed_image, lang=lang, config=config)
+    text = normalize_spanish_accents(text)
     return text.strip()
 
 def preprocess_text(text):
-    inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
+    inputs = tokenizer(
+        text, 
+        return_tensors="pt", 
+        padding=True, 
+        truncation=True, 
+        max_length=512  # Ensure this matches the model's max length
+    )
     return inputs
 
-def get_model_output(image_path):
-    extracted_text = extract_text_from_image(image_path)
+def get_model_output(image_path, lang):
+    extracted_text = extract_text_from_image(image_path, lang)
     if not extracted_text:
         return "No text extracted from the image"
     

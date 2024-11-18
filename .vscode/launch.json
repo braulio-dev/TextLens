@@ -10,10 +10,23 @@
           "--model_path",
           "./ocr-10.16.24",
           "--image_path",
-          "./dump/slide.jpg",
+          "./dump/default.jpg",
           "--ground_truth_text",
-          "En aprendizaje estadístico, se busca entrenar un modelo utilizando como base una serie de parámetros u observaciones de un fenómeno real. Es posible que una función f, que representa al fenómeno, pueda involucrar una o más de una variable. En general, esta área de estudio permite la estimación de esa función, y lo hace mediante dos formas: predicción e inferencia. La predicción busca únicamente estimar un valor de f de manera precisa. La predicción se representa de la siguiente manera: Y=f(X). Usualmente, la implementación de la función predictora no es significante, ya que sólo se busca encontrar un resultado aproximado. Se dice aproximado porque se sabe que existen errores a la hora de traducir un problema del mundo real a un espacio matemático. Éstos errores pueden ser reducibles o no reducibles. Un error reducible es aquél que puede ser disminuido al mejorar el modelo f(X). Aunque se puede mejorar la precisión del modelo, aun existen errores inherentes al traducir un fenómeno real a un modelo matemático. Éstos se llaman errores irreducibles, y se originan de la falta de variables medibles dentro un fenómeno. Ambos errores se pueden medir como en la Figura 1.",
+          "Marco teórico En aprendizaje estadístico, se busca entrenar un modelo utilizando como base una serie de parámetros u observaciones de un fenómeno real. Es posible que una función f, que representa al fenómeno, pueda involucrar una o más de una variable. En general, esta área de estudio permite la estimación de esa función, y lo hace mediante dos formas: predicción e inferencia. La predicción busca únicamente estimar un valor de f de manera precisa. La predicción se representa de la siguiente manera: Y = f(X). Usualmente, la implementación de la función predictora no es significante, ya que sólo se busca encontrar un resultado aproximado. Se dice aproximado porque se sabe que existen errores a la hora de traducir un problema del mundo real a un espacio matemático. Éstos errores pueden ser reducibles o no reducibles. Un error reducible es aquél que puede ser disminuido al mejorar el modelo f(X). Aunque se puede mejorar la precisión del modelo, aun existen errores inherentes al traducir un fenómeno real a un modelo matemático. Éstos se llaman errores irreducibles, y se originan de la falta de variables medibles dentro un fenómeno. Ambos errores se pueden medir como en la Figura 1.",
           "--evaluate_metrics"
+        ],
+        "console": "integratedTerminal"
+      },
+      {
+        "name": "OCR 2 - Debug",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder}/main.py",
+        "args": [
+          // "--model_path",
+          // "./ocr-10.16.24",
+          "--image_path",
+          "./dump/test.jpg"
         ],
         "console": "integratedTerminal"
       }

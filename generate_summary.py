@@ -1,15 +1,14 @@
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from transformers import pipeline, AutoModelForSeq2SeqLM, AutoTokenizer
 
-def generate_summary(text, model_dir="./fine-tuned-t5-ocr"):
-    # Load the fine-tuned model
-    tokenizer = AutoTokenizer.from_pretrained(model_dir)
-    model = AutoModelForSeq2SeqLM.from_pretrained(model_dir)
-
-    # Generate the summarized text
-    inputs = tokenizer.encode("summarize: " + text, return_tensors="pt", max_length=512, truncation=True)
-    summary_ids = model.generate(inputs, max_length=150, min_length=80, length_penalty=5.0, num_beams=2, early_stopping=True)
-    summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
-    return summary
+def generate_summary(text, model_name="mrm8488/bert2bert_shared-spanish-finetuned-summarization"):
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+    summarizer = pipeline("summarization", model=model, tokenizer=tokenizer)
+    
+    length = int(len(text.split()) * 0.75)
+    min_length = int(max(10, length * 0.5))
+    summary = summarizer(text, max_length=length, min_length=min_length, do_sample=False)
+    return summary[0]['summary_text']
 
 if __name__ == "__main__":
     text = "Your input text here."

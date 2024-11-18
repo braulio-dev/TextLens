@@ -1,8 +1,8 @@
-__pycache__/
-dataset/
-.idea/
-ocr-*/
-old_model.zip
-model.zip
-/vue-app/node_modules/
-/vue-app/dist/
+**/__pycache__/
+**/dataset/
+**/.idea/
+**/ocr-*/
+**/old_model.zip
+**/model.zip
+**/vue-app/node_modules/
+**/vue-app/dist/

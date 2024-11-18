@@ -2,13 +2,18 @@
     "version": "0.2.0",
     "configurations": [
       {
+        "name": "API",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder}/api.py",
+        "console": "integratedTerminal"
+      },
+      {
         "name": "OCR - Debug",
         "type": "debugpy",
         "request": "launch",
         "program": "${workspaceFolder}/main.py",
         "args": [
-          "--model_path",
-          "./ocr-10.16.24",
           "--image_path",
           "./dump/default.jpg",
           "--ground_truth_text",
@@ -23,10 +28,22 @@
         "request": "launch",
         "program": "${workspaceFolder}/main.py",
         "args": [
-          // "--model_path",
-          // "./ocr-10.16.24",
           "--image_path",
           "./dump/test.jpg"
+        ],
+        "console": "integratedTerminal"
+      },
+      {
+        "name": "OCR 3 - Debug",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder}/main.py",
+        "args": [
+          "--image_path",
+          "./dump/test2.png",
+          "--ground_truth_text",
+          "Un error reducible es aquél que puede ser disminuido al mejorar el modelo Ex, y lo hace mediante dos formas : predicción e inferencia de un fenómeno real, y que puede afectar a una variable en la que solo se busca encontrar un resultado aproximado",
+          "--evaluate_metrics"
         ],
         "console": "integratedTerminal"
       }

@@ -6,3 +6,7 @@ markdown
 pyspellchecker
 datasets
 accelerate
+torchvision
+fastapi
+uvicorn
+python-multipart

@@ -1,9 +1,17 @@
 import cv2
 import pytesseract
 from spellchecker import SpellChecker
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+from transformers import AutoModelForSeq2SeqLM, AutoModelForSequenceClassification, AutoTokenizer
 import numpy as np
 import re
+import torch
+from PIL import Image, ImageEnhance
+from torchvision import transforms
+
+model_path = "./ocr-10.16.24/"
+model = AutoModelForSequenceClassification.from_pretrained(model_path)
+tokenizer = AutoTokenizer.from_pretrained(model_path)
+model.eval()
 
 def levenshtein_distance(s1, s2):
     if len(s1) < len(s2):
@@ -29,24 +37,45 @@ def wer(s1, s2):
     s2_words = s2.split()
     return levenshtein_distance(s1_words, s2_words) / len(s2_words)
 
-def preprocess_image(image_path, output_path):
-    image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-    cv2.imwrite(output_path, image)
-    return output_path
-
-def clean_text(text):
-    # Remove unwanted characters and trailing spaces, but keep essential punctuation
-    text = re.sub(r'[^\w\s.,;:!?\'"-]', '', text)  # Remove non-alphanumeric characters except spaces and essential punctuation
-    text = re.sub(r'\s+', ' ', text)  # Replace multiple spaces with a single space
-    return text.strip()  # Remove leading and trailing spaces
-
-def extract_text_from_image(image_path, lang='spa', config='--oem 1 --psm 6 -c preserve_interword_spaces=1'):
-    text = pytesseract.image_to_string(image_path, lang=lang, config=config)
-    return clean_text(text)  # Clean the extracted text before returning
-
 def evaluate_ocr(text, ground_truth_text):
     trimmed = ' '.join(text.replace('\n', ' ').split())
     cer_value = cer(trimmed, ground_truth_text)
     wer_value = wer(trimmed, ground_truth_text)
     levenshtein_value = levenshtein_distance(trimmed, ground_truth_text)
     return cer_value, wer_value, levenshtein_value
+
+def extract_text_from_image(image_path, lang='spa', config='--oem 1 --psm 6 -c preserve_interword_spaces=1'):
+    processed_image = Image.open(image_path)
+
+    # Grayscale
+    processed_image = processed_image.convert('L')
+
+    # Increase contrast
+    enhancer = ImageEnhance.Contrast(processed_image)
+    processed_image = enhancer.enhance(2)
+
+    # Resizing
+    processed_image = processed_image.resize((processed_image.width * 3, processed_image.height * 3))
+
+    # Write the processed image to a file
+    processed_image.save("./dump/processed_image.png")
+
+    text = pytesseract.image_to_string(processed_image, lang=lang, config=config)
+    return text.strip()
+
+def preprocess_text(text):
+    inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
+    return inputs
+
+def get_model_output(image_path):
+    extracted_text = extract_text_from_image(image_path)
+    if not extracted_text:
+        return "No text extracted from the image"
+    
+    inputs = preprocess_text(extracted_text)
+    
+    with torch.no_grad():
+        outputs = model(**inputs)
+    
+    predicted_class = torch.argmax(outputs.logits, dim=-1)
+    return tokenizer.decode(inputs['input_ids'][0], skip_special_tokens=True)

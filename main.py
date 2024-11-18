@@ -1,13 +1,9 @@
 import argparse
-from utils import preprocess_image, extract_text_from_image, evaluate_ocr
+from utils import get_model_output, evaluate_ocr
 from generate_summary import generate_summary
 
 def main(image_path, model_name, ground_truth_text=None, evaluate_metrics=False):
-    # Preprocess the image
-    preprocessed_image_path = preprocess_image(image_path, './dump/preprocessed_slide.jpg')
-
-    # Extract text from the preprocessed image
-    text = extract_text_from_image(preprocessed_image_path, lang='spa')
+    text = get_model_output(image_path)
 
     print("Read Text:")
     print(text)
@@ -15,7 +11,6 @@ def main(image_path, model_name, ground_truth_text=None, evaluate_metrics=False)
     print("\nSummary:")
     print(generate_summary(text, model_name))
 
-    # Optionally evaluate OCR performance
     if evaluate_metrics and ground_truth_text:
         cer_value, wer_value, levenshtein_value = evaluate_ocr(text, ground_truth_text)
         print(f"CER: {cer_value}")
@@ -25,7 +20,7 @@ def main(image_path, model_name, ground_truth_text=None, evaluate_metrics=False)
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="OCR and text correction")
     parser.add_argument('--image_path', type=str, required=True, help="Path to the input image")
-    parser.add_argument('--model_name', type=str, default="t5-large", help="Name of the pre-trained model")
+    parser.add_argument('--model_name', type=str, default="mrm8488/bert2bert_shared-spanish-finetuned-summarization", help="Name of the pre-trained model")
     parser.add_argument('--ground_truth_text', type=str, help="Ground truth text for evaluation")
     parser.add_argument('--evaluate_metrics', action='store_true', help="Flag to evaluate OCR metrics")
 

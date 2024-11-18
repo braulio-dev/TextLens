@@ -16,47 +16,39 @@ def read_file_with_encodings(file_path, encodings=['utf-8', 'latin-1', 'iso-8859
 def load_and_preprocess_dataset(image_dir, text_dir):
     data = {"ocr_text": [], "true_text": []}
 
-    # Iterate over the image files
+    # Get all images
     for image_file in os.listdir(image_dir):
         if image_file.endswith(('.png', '.jpg', '.jpeg')):
-            # Extract the base name without extension
+            # Get name of image
             base_name = os.path.splitext(image_file)[0]
-
-            # Remove the space and the (#) pattern at the end of the base name
             trimmed_base_name = re.sub(r"\s*\(\d+\)$", "", base_name)
 
-            # Construct the new file path
+            # Get truth text
             text_file = os.path.join(text_dir, trimmed_base_name + ".txt")
-            
-            # Read the true text from the text file
             true_text = read_file_with_encodings(text_file)
             
-            # Read the image file
+            # Extract text
             image_path = os.path.join(image_dir, image_file)
             ocr_text = pytesseract.image_to_string(image_path, lang='spa')
             
-            # Append the extracted text and true text to the data
+            # Results
             data["ocr_text"].append(ocr_text)
             data["true_text"].append(true_text)
     
-    # Create a Hugging Face dataset
     dataset = Dataset.from_dict(data)
     
-    # Split the dataset into training and validation sets
     if len(dataset) > 1:
         dataset = dataset.train_test_split(test_size=0.1)
     else:
         dataset = DatasetDict({"train": dataset, "test": dataset})
     
-    # Initialize the tokenizer
+    # Tokenize 
     tokenizer = AutoTokenizer.from_pretrained("t5-base")
 
-    # Tokenize the dataset
     def preprocess_function(examples):
         inputs = examples['ocr_text']
         model_inputs = tokenizer(inputs, padding='max_length', max_length=512, truncation=True)
 
-        # Setup the tokenizer for targets
         with tokenizer.as_target_tokenizer():
             labels = tokenizer(examples['true_text'], padding='max_length', max_length=512, truncation=True)
 
